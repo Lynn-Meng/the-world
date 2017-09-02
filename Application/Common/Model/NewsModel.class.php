@@ -81,4 +81,5 @@ class NewsModel extends Model
         $res = $this->_dbc->limit(0,3)->order('listorder desc,news_id desc')->select();
         return $res;
     }
+
 }

@@ -34,12 +34,12 @@
       <div class="col-sm-9 col-md-9">
         <div class="banner">
           <div class="banner-left">
-            <div class="banner-info"><span>阅读数</span><i class="news_count node-<?php echo ($result['topPicNews'][0]['news_id']); ?>" news-id="<?php echo ($result['topPicNews'][0]['news_id']); ?>" id="node-<?php echo ($result['topPicNews'][0]['news_id']); ?>"></i></div>
-            <a target="_blank" href="/index.php?c=detail&id=<?php echo ($result['topPicNews'][0]['news_id']); ?>"><img width="670" height="360" src="<?php echo ($result['topPicNews'][0]['thumb']); ?>" alt=""></a>
+            <div class="banner-info"><span>阅读数</span><i class="news_count node-$resultPic[0]['news_id']}" news-id="$resultPic[0]['news_id']}" id="node-$resultPic[0]['news_id']}"></i></div>
+            <a target="_blank" href="/index.php?c=detail&id=$resultPic[0]['news_id']}"><img width="670" height="360" src="<?php echo ($resultPic[0]['thumb']); ?>" alt=""></a>
           </div>
           <div class="banner-right">
             <ul>
-              <?php if(is_array($result['topSmailNews'])): $i = 0; $__LIST__ = $result['topSmailNews'];if( count($__LIST__)==0 ) : echo "" ;else: foreach($__LIST__ as $key=>$vo): $mod = ($i % 2 );++$i;?><li>
+              <?php if(is_array($resultPic)): $i = 0; $__LIST__ = $resultPic;if( count($__LIST__)==0 ) : echo "" ;else: foreach($__LIST__ as $key=>$vo): $mod = ($i % 2 );++$i;?><li>
                 <a target="_blank" href="/index.php?c=detail&id=<?php echo ($vo["news_id"]); ?>"><img width="150" height="113" src="<?php echo ($vo["thumb"]); ?>" alt="<?php echo ($vo["title"]); ?>"></a>
               </li><?php endforeach; endif; else: echo "" ;endif; ?>
 
@@ -47,7 +47,7 @@
           </div>
         </div>
         <div class="news-list">
-          <?php if(is_array($result['listNews'])): $i = 0; $__LIST__ = $result['listNews'];if( count($__LIST__)==0 ) : echo "" ;else: foreach($__LIST__ as $key=>$vo): $mod = ($i % 2 );++$i;?><dl>
+          <?php if(is_array($resultNews)): $i = 0; $__LIST__ = $resultNews;if( count($__LIST__)==0 ) : echo "" ;else: foreach($__LIST__ as $key=>$vo): $mod = ($i % 2 );++$i;?><dl>
             <dt><a target="_blank" href="/index.php?c=detail&id=<?php echo ($vo["news_id"]); ?>"><?php echo ($vo["title"]); ?></a></dt>
             <dd class="news-img">
               <a target="_blank" href="/index.php?c=detail&id=<?php echo ($vo["news_id"]); ?>"><img width="200" height="120" src="<?php echo ($vo["thumb"]); ?>" alt="<?php echo ($vo["title"]); ?>"></a>
@@ -63,7 +63,26 @@
         </div>
       </div>
       <!--网站右侧信息-->
-      
+      <div class="col-sm-3 col-md-3">
+  <div class="right-title">
+    <h3>文章排行</h3>
+    <span>TOP ARTICLES</span>
+  </div>
+
+  <div class="right-content">
+    <ul>
+      <?php if(is_array($resultNews)): $k = 0; $__LIST__ = $resultNews;if( count($__LIST__)==0 ) : echo "" ;else: foreach($__LIST__ as $key=>$vo): $mod = ($k % 2 );++$k;?><li class="num<?php echo ($k); ?> curr">
+        <a target="_blank" href="/index.php?c=detail&id=<?php echo ($vo["news_id"]); ?>"><?php echo ($vo["small_title"]); ?></a>
+        <?php if($k == 1): ?><div class="intro">
+          <?php echo ($vo["description"]); ?>
+        </div><?php endif; ?>
+      </li><?php endforeach; endif; else: echo "" ;endif; ?>
+    </ul>
+  </div>
+  <?php if(is_array($resultHotPic)): $k = 0; $__LIST__ = $resultHotPic;if( count($__LIST__)==0 ) : echo "" ;else: foreach($__LIST__ as $key=>$vo): $mod = ($k % 2 );++$k;?><div class="right-hot">
+    <a target="_blank" href="<?php echo ($vo["url"]); ?>"><img src="<?php echo ($vo["thumb"]); ?>" alt="<?php echo ($vo["name"]); ?>"></a>
+  </div><?php endforeach; endif; else: echo "" ;endif; ?>
+</div>
     </div>
   </div>
 </section>

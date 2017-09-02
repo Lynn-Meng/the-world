@@ -101,4 +101,9 @@ class PositionContentModel extends Model
         $res = $this->_dbc->where('id='.$id)->save($data);
         return $res;
     }
+    public function getHotNews()
+    {
+        $res = $this->_dbc->where('position_id=5')->select();
+        return $res;
+    }
 }
