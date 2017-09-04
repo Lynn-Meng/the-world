@@ -6,9 +6,7 @@ $('#button-add').click(function () {
     window.location.href = SCOPE.add_url;
 });
 $('#cms-button-submit').click(function () {
-
     var data = {};
-
     //获取到前台界面的表单数据:
     var  dataArray = $('#cms-form').serializeArray();
     $.each(dataArray,function () {
@@ -16,7 +14,6 @@ $('#cms-button-submit').click(function () {
         data[this.name] = this.value;
     });
     console.log(data);
-
     $.post(SCOPE.save_url,data,function (res) {
         if (res.status == 1)
         {

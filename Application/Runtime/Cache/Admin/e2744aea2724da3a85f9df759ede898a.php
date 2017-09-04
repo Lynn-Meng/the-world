@@ -1,7 +1,89 @@
-<include file="Index/header" />
+<?php if (!defined('THINK_PATH')) exit();?><!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <title>News后台管理平台</title>
+    <!-- Bootstrap Core CSS -->
+    <link href="/Public/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Custom CSS -->
+    <link href="/Public/css/sb-admin.css" rel="stylesheet">
+
+    <!-- Morris Charts CSS -->
+    <link href="/Public/css/plugins/morris.css" rel="stylesheet">
+
+    <!-- Custom Fonts -->
+    <link href="/Public/css/font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+    <link rel="stylesheet" href="/Public/css/news/common.css" />
+    <link rel="stylesheet" href="/Public/css/party/bootstrap-switch.css" />
+    <link rel="stylesheet" type="text/css" href="/Public/css/party/uploadify.css">
+
+    <!-- jQuery -->
+    <script src="/Public/js/jquery-3.2.1.js"></script>
+    <script src="/Public/js/bootstrap.min.js"></script>
+    <script src="/Public/js/dialog/layer.js"></script>
+    <script src="/Public/js/dialog.js"></script>
+    <script type="text/javascript" src="/Public/js/party/jquery.uploadify.js"></script>
+
+</head>
+
+    
+
+
+
 <body>
 <div id="wrapper">
-  <include file="Index/nav"/>
+  <?php
+ $res = D('Menu')->getAdminMenuList(); $adminName = getAdminNameToIndex(); $index = 'index'; ?>
+
+<!-- Navigation -->
+<nav class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+  <!-- Brand and toggle get grouped for better mobile display -->
+  <div class="navbar-header">
+
+    <a class="navbar-brand" >CMS内容管理平台</a>
+  </div>
+  <!-- Top Menu Items -->
+  <ul class="nav navbar-right top-nav">
+
+    <li class="dropdown">
+      <a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="fa fa-user"></i><?php echo ($adminName); ?> <b class="caret"></b></a>
+      <ul class="dropdown-menu">
+        <li>
+          <a href=""><i class="fa fa-fw fa-user"></i> 个人中心</a>
+        </li>
+
+        <li class="divider"></li>
+        <li>
+          <a href="./admin.php?c=login&a=loginout"><i class="fa fa-fw fa-power-off"></i> 退出</a>
+        </li>
+      </ul>
+    </li>
+  </ul>
+  <!-- Sidebar Menu Items - These collapse to the responsive navigation menu on small screens -->
+  <div class="collapse navbar-collapse navbar-ex1-collapse">
+    <ul class="nav navbar-nav side-nav nav_list">
+      <li <?php echo (changeActive($index)); ?>>
+        <a href="/admin.php?c=index&a=index"><i class="fa fa-fw fa-dashboard"></i> 首页</a>
+      </li>
+
+      <?php if(is_array($res)): $i = 0; $__LIST__ = $res;if( count($__LIST__)==0 ) : echo "" ;else: foreach($__LIST__ as $key=>$row): $mod = ($i % 2 );++$i;?><li <?php echo (changeActive($row["c"])); ?>>
+          <a href="<?php echo (getAdminUrl($row)); ?>"><i class="fa fa-fw fa-bar-chart-o"></i><?php echo ($row["name"]); ?></a>
+        </li><?php endforeach; endif; else: echo "" ;endif; ?>
+
+
+    </ul>
+  </div>
+  <!-- /.navbar-collapse -->
+</nav>
+
   <script src="/Public/js/kindeditor/kindeditor-all.js"></script>
   <div id="page-wrapper">
 
@@ -52,9 +134,7 @@
               <div class="col-sm-5">
                 <select class="form-control" name="title_font_color">
                   <option value="">==请选择颜色==</option>
-                    <foreach name="titleFontColor" item="color">
-                      <option value="{$key}">{$color}</option>
-                    </foreach>
+                    <?php if(is_array($titleFontColor)): foreach($titleFontColor as $key=>$color): ?><option value="<?php echo ($key); ?>"><?php echo ($color); ?></option><?php endforeach; endif; ?>
                 </select>
               </div>
             </div>
@@ -63,9 +143,7 @@
               <div class="col-sm-5">
                 <select class="form-control" name="catid">
 
-                  <foreach name="webSiteMenu" item="sitenav">
-                    <option value="{$sitenav.menu_id}">{$sitenav.name}</option>
-                  </foreach>
+                  <?php if(is_array($webSiteMenu)): foreach($webSiteMenu as $key=>$sitenav): ?><option value="<?php echo ($sitenav["menu_id"]); ?>"><?php echo ($sitenav["name"]); ?></option><?php endforeach; endif; ?>
                 </select>
               </div>
             </div>
@@ -74,10 +152,7 @@
               <label for="inputname" class="col-sm-2 control-label">来源:</label>
               <div class="col-sm-5">
                 <select class="form-control" name="copyfrom">
-                  <foreach name="copyfrom" item="cfrom">
-
-                    <option value="{$key}">{$cfrom}</option>
-                  </foreach>
+                  <?php if(is_array($copyfrom)): foreach($copyfrom as $key=>$cfrom): ?><option value="<?php echo ($key); ?>"><?php echo ($cfrom); ?></option><?php endforeach; endif; ?>
                 </select>
               </div>
             </div>
@@ -142,4 +217,10 @@
   });
 </script>
 
-<include file="Index/footer" />
+<script src="/Public/js/admin/common.js"></script>
+
+
+
+</body>
+
+</html>

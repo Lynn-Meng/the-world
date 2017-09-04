@@ -31,7 +31,6 @@ class UploadImageModel extends Model
         }
         else
         {
-            dump($this->_uploadObj->getError());
             return false;
         }
     }

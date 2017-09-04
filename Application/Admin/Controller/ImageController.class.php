@@ -15,7 +15,7 @@ class ImageController extends Controller
         $upload = D('UploadImage');
         //res是上传成功后的图片绝对路径
         $res = $upload->imageUpload();
-
+//        dump($res);
         if ($res === false)
         {
             return send(0,'上传失败');

@@ -106,4 +106,10 @@ class PositionContentModel extends Model
         $res = $this->_dbc->where('position_id=5')->select();
         return $res;
     }
+    public function getThreePic()
+    {
+        $res = $this->_dbc->where('position_id=2')->order('listorder desc,news_id desc')->select();
+        return $res;
+    }
+
 }

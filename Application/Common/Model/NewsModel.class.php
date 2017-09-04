@@ -63,23 +63,65 @@ class NewsModel extends Model
         $res = $this->_dbc->where('news_id='.$id)->find();
         return $res;
     }
-    public function insert($data = array())
-    {
-        if (!is_array($data) || (!$data))
-        {
-            return 0;
-        }
-        if (!$data['create_time'])
-        {
-            $data['create_time'] = time();
-        }
-        return $res =  $this->_dbc->add($data);
 
-    }
     public function getThreePic()
     {
         $res = $this->_dbc->limit(0,3)->order('listorder desc,news_id desc')->select();
         return $res;
     }
+    public function addOneRow($data)
+    {
+        $dataCon = $data;
+        $dataCon['listorder'] = 0;
+        $dataCon['update_time'] = time();
+        $dataCon['create_time'] = time();
+        $dataCon['status'] = 1;
+        $dataCon['count'] = 0;
+        $dataCon['username'] = getAdminNameToIndex();
+        $res = $this->_dbc->add($dataCon);
+        return $res;
+    }
+    public function edit()
+    {
+
+    }
+    public function getNewsListByCount()
+    {
+        $res = $this->_dbc->limit(0,4)->order('count desc')->select();
+        return $res;
+    }
+    public function getOneRoById($id)
+    {
+        if (!is_numeric($id) || !$id)
+        {
+            return 0;
+        }
+        return $this->_dbc->where('news_id='.$id)->find();
+    }
+    public function EditOneRow($id,$data)
+    {
+        if (!is_array($data) || !$data)
+        {
+            return 0;
+        }
+        if (!is_numeric($id) || !$id)
+        {
+            return 0;
+        }
+        $dataCon = $data;
+        $dataCon['listorder'] = 0;
+        $dataCon['update_time'] = time();
+        $dataCon['create_time'] = time();
+        $dataCon['status'] = 1;
+        $dataCon['count'] = 0;
+        $dataCon['username'] = getAdminNameToIndex();
+        $res =  $this->_dbc->where('news_id='.$id)->save($dataCon);
+        return $res;
+
+    }
+
+
+
+
 
 }

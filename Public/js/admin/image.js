@@ -16,9 +16,9 @@ $(function () {
             if (response)
             {
                 var obj = JSON.parse(data);
-                console.log(data);
+                // console.log(data);
                 $('#'+file.id).find('.data').html('上传完毕');
-                $("#upload_org_code_img").attr("src","."+obj.data);
+                $("#upload_org_code_img").attr("src", obj.data);
                 $("#file_upload_image").attr('value',obj.data);
                 $('#upload_org_code_img').show();
             }
