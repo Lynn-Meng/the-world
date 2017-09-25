@@ -1,0 +1,38 @@
+@mixin font-dpr($font-size)
+{
+  font-size: $font-size;
+  [data-dpr="2"] & {
+    font-size: $font-size * 2;
+  }
+  [data-dpr="3"] & {
+    font-size: $font-size * 3;
+  }
+  [data-dpr="4"] & {
+    font-size: $font-size * 4;
+  }
+}
+@mixin flex($content:space-between,$item:center)
+{
+  display: flex;
+  justify-content: $content;
+  align-items: $item;
+}
+
+$rem : 75px;
+
+@function pxToRem($px...)
+{
+  $len:length($px);
+  $renValue : '';
+  @for $i from 1 through $len
+  {
+    $value : nth($px , $i ) / $rem * 1rem;
+    $renValue : #{$renValue +  $value + ""};
+  }
+  @return  $renValue;
+}
+
+@mixin property-of-rem($property,$px...)
+{
+  #{$property} : pxToRem($px...);
+}
