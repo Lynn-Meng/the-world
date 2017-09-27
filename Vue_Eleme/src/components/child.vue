@@ -121,7 +121,6 @@
                 let maxHeight = document.body.clientHeight;
                 let windowHeight = window.innerHeight;
                 if (window.scrollY == maxHeight - windowHeight) {
-                    console.log(this.isLoad);
 
                     if (this.isLoad == false) {
                         return false;
@@ -130,7 +129,6 @@
                     this.offset += 20;
                     console.log('到底了 别拉了');
                     getShoplist(this.value.latitude, this.value.longitude, this.offset).then(response => {
-                        console.log(this.shoplist);
                         this.shoplist = this.shoplist.concat(response);
 //                        for (var i = 0; i < response.length; i++)
 //                        {
