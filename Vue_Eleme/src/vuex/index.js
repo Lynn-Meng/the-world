@@ -3,28 +3,18 @@
  */
 import Vue from 'vue';
 import Vuex from 'vuex';
+import mutations from './mutations';
 Vue.use(Vuex);
+
+const state = {
+    positions:null,
+};
+
+//本页面将状态和突变结合
 
 export default new Vuex.Store({
 
-
-    state:{
-        count:1,
-        positions:null,
-    },
-
-    mutations:{
-        increment: state => state.count *= 2,
-        decrement: state => state.count /= 2,
-        changePositions (state,location)
-        {
-            state.positions = {
-                latitude : location.latitude,
-                longiotude : location.longitude
-            }
-        }
-    },
-
-
+    state,
+    mutations
 
 });

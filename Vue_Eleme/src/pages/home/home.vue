@@ -1,6 +1,5 @@
 <template>
     <div id="home">
-
         <div class="entirety" id="entirety">
             <div class="header-weather-address">
                 <div class="header-address"><span class="position1"><i class="fa fa-map-marker"></i></span><p v-if="address"><p v-if="address">{{address.name}}</p><span class="position2"><i class="fa fa-caret-down"></i></span></div>
@@ -63,9 +62,6 @@
             <div class="footer"></div>
 
         </div>
-
-
-
         <m-footer></m-footer>
     </div>
 </template>
@@ -124,13 +120,21 @@
 
             }
         },
+
+
+
+
         watch:{
-            positions:function () {
+            positions:function() {
+//                console.log('old');
+//                console.log(this.positions);
                 this.initData();
+                setStorage(location, this.positions);
+                this.$store.commit('SAVE_LOCATION', this.positions);
+//                console.log('new');
+//                console.log(this.positions);
             }
         },
-
-
 
         methods:{
 
@@ -237,12 +241,14 @@
                 this.$store.commit('changePositions',this.positions);
                 console.log(this.$store.state.positions);
                 setStorage(location,this.positions);
+
             }
             catch (error)
             {
+//                console.log(this.positions);
                 console.log(error);
                 this.positions = getStorage('location');
-                setStorage(location,this.positions);
+//                console.log(this.positions);
             }
         },
 

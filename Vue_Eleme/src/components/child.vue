@@ -127,7 +127,7 @@
                     }
                     this.isLoad = false;
                     this.offset += 20;
-                    console.log('到底了 别拉了');
+//                    console.log('到底了 别拉了');
                     getShoplist(this.value.latitude, this.value.longitude, this.offset).then(response => {
                         this.shoplist = this.shoplist.concat(response);
 //                        for (var i = 0; i < response.length; i++)

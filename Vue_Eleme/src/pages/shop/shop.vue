@@ -66,11 +66,11 @@
             <div v-show="isCommodity">
                 <div class="commodity-main">
                     <ul class="commodity-main-left" ref="commodityMainLeft">
-                        <li class="liList" v-for="(item,key) in commoditylist" v-on:click="getIndex(key)"  :class="(key == 0 ? 'activeted' : '')" ref="commodityMainLeftLis" ><img v-if="item.icon_url"     :src="getImg(item.icon_url,'18x20')" ><span v-show="item.name">{{item.name}}</span></li>
+                        <li class="liList" v-for="(item,key) in commoditylist" v-on:click="getIndex(key)"  :class="(key == 0 ? 'activeted' : '')" ref="commodityMainLeftLis" ><img v-if="item.icon_url"     :src="getImg(item.icon_url,'18x20')" ><span class="redNum" v-show="buyNums[key]">{{buyNums[key]}}</span><span v-show="item.name">{{item.name}}</span></li>
                     </ul>
                     <section class="commodity-main-right">
                         <div ref="commodityScroll" class="commodity-scroll" id="commodity-scroll"  v-on:scroll="scrollListen">
-                            <dl v-for="item in commoditylist" ref="dls">
+                            <dl v-for="(item,dlIndex) in commoditylist" ref="dls">
                                 <dt>
                                     <div class="dt-left">
                                         <strong>{{item.name}}</strong>
@@ -83,7 +83,7 @@
                                 </dt>
 
 
-                                <dd v-for="items in item.foods">
+                                <dd v-for="(items,index) in item.foods" ref="dds">
                                     <div class="list-food-box">
                                         <div class="list-food-content">
                                             <img :src="getImg(items.image_path,'140x140')"  v-if="items.image_path">
@@ -91,16 +91,36 @@
                                                 <strong class="list-food-header-price">
                                                     <span>¥{{items.specfoods[0].price}}<span v-if="items.specfoods[0].specs.length >= 1">起</span></span>
                                                 </strong>
+
+
+
+                                            <div class="addAndSubtract">
+                                                <div class="list-food-header-subtract" v-if="dlDdArray.length > 0  && dlDdArray[dlIndex][index]">
+                                                    <a class="subtract-yuan-a">
+                                                        <span class="subtract-yuan" v-on:click="subtractNum(dlIndex,index)">
+                                                            -
+                                                       </span>
+                                                    </a>
+                                                </div>
+                                                <div class="list-food-header-num" v-if="dlDdArray.length > 0  && dlDdArray[dlIndex][index]">{{dlDdArray[dlIndex][index]}}</div>
                                                 <div class="list-food-header-add">
                                                     <a>
-                                                       <span class="add-yuan" v-if="items.specfoods[0].specs.length < 1">
+                                                       <span class="add-yuan" v-if="items.specfoods[0].specs.length < 1" v-on:click="addNum(dlIndex,index)">
                                                             +
                                                        </span>
-                                                        <span class="add-yuan-select" v-if="items.specfoods[0].specs.length >= 1" :data-guige="items.virtual_food_id" v-on:click="selectBig(items)">
+                                                        <span class="add-yuan-select" v-if="items.specfoods[0].specs.length >= 1" :data-guige="items.virtual_food_id" v-on:click="selectBig(items,dlIndex,index)">
                                                             选规格
                                                         </span>
                                                     </a>
                                                 </div>
+                                            </div>
+
+
+
+
+
+
+
                                                 <section class="list-food-header">
                                                     <span  v-for="attributes in items.attributes" :style="{backgroundColor:'#' + attributes.icon_color}">
                                                         {{attributes.icon_name}}
@@ -133,15 +153,19 @@
                             <div class="guige" v-if="guigemessage" >
                                 <h1>{{guigemessage.name}}</h1>
                                 <div class="guiges">
-                                    <div class="guiges-content">
+                                    <div class="guiges-content" ref="guigesContent">
                                         <h2>{{guigemessage.specifications[0].name}}</h2>
-                                        <a v-for="item in guigemessage.specifications[0].values">{{item}}</a>
+                                        <a  v-for="(item,index) in guigemessage.specifications[0].values" v-on:click="pitchGuige(index)" ref="guigeAs">{{item}}</a>
+                                    </div>
+                                    <div class="guiges-content" v-for="(item,divIndex) in guigemessage.attrs" ref="spicContent">
+                                        <h2>{{item.name}}</h2>
+                                        <a v-for="(items,index) in item.values" v-on:click="pitchSpic(index,divIndex)" ref="spicAs">{{items}}</a>
                                     </div>
                                 </div>
                                 <div class="guiges-price">
-                                    <p>¥{{guigemessage.specfoods[0].price}}</p>
+                                    <p>¥{{guigemessage.specfoods[priceIndex].price}}</p>
                                     <div class="xuanhaole">
-                                        <button>选好了</button>
+                                        <button v-on:click="addNum(dlIndexXuanHaole,indexXuanHaole)">选好了</button>
                                     </div>
                                     <a href="javascript:" role="button" class="close" v-on:click="closeguige">X</a>
                                 </div>
@@ -161,6 +185,29 @@
 
         </div>
         <div  ref="mengban" class="mengban" ></div>
+        <footer>
+            <div class="footerMeng"></div>
+            <div class="cart-body"></div>
+            <div class="cart-footer">
+
+                <span class="carticon" :class="{buybuybuy:isCartHave}">
+                    <i class="fa fa-shopping-cart"></i>
+                                    <span class="redNum" v-show="buySum">{{buySum}}</span>
+
+                </span>
+                <div class="cartInfo">
+                    <p class="sumPrice">
+                        ¥22
+                    </p>
+                    <p class="sendPrice">
+                        配送费¥4
+                    </p>
+                </div>
+                <a class="quJiesuan">
+                    去结算
+                </a>
+            </div>
+        </footer>
         <!--<button @click="$router.go(-1)">Back</button>-->
     </div>
 
@@ -203,6 +250,28 @@
 
                 dlHeightArrs:[],
 
+
+                priceIndex :0,
+
+
+                //二维数组   分别代表 dl  dd
+                dlDdArray:[],
+
+                //每个li里面购买的总量
+                buyNum:0,
+
+                //购买总量的数组
+                buyNums : [],
+                //购物车总量
+                buySum:null,
+
+                //购物车里面是否有东西
+                isCartHave:false,
+
+
+                dlIndexXuanHaole:null,
+                indexXuanHaole:null
+
             }
         },
 
@@ -217,6 +286,91 @@
               }
         },
         methods: {
+
+            //增加一个 个数
+            addNum:function(dlIndex,index)
+            {
+
+                var arr = this.dlDdArray[dlIndex];
+                arr[index] += 1;
+
+                let buySum = 0;
+
+                let cartSum = 0;
+                for (let i = 0; i < arr.length; i++)
+                {
+                    buySum += arr[i];
+                }
+                this.buyNums[dlIndex] = buySum;
+
+                console.log(this.buyNums);
+                for(let j = 0; j < this.buyNums.length; j++)
+                {
+                    cartSum += this.buyNums[j];
+                }
+
+                this.buySum = cartSum;
+                console.log(this.buySum);
+
+                this.isCartHave = true;
+
+                this.$set(this.dlDdArray,dlIndex,arr,this.buyNums,this.buySum);
+                this.isSelectContent = false;
+
+
+
+            //减掉一个数量
+            },
+            subtractNum:function (dlIndex,index) {
+
+                var arr = this.dlDdArray[dlIndex];
+                arr[index] -= 1;
+
+                this.buyNums[dlIndex] -= 1;
+
+                this.$set(this.dlDdArray,dlIndex,arr,this.buyNums);
+                this.isSelectContent = false;
+                this.buySum--;
+                if(this.buySum == 0)
+                {
+                    this.isCartHave = false;
+                }
+                console.log(this.buySum);
+
+            },
+
+
+
+            //选择规格
+            pitchGuige:function (index) {
+                let guigesContentChilds = this.$refs.guigesContent.children;
+
+                for (let i = 0; i < guigesContentChilds.length; i++)
+                {
+                    guigesContentChilds[i].classList.remove('pitchUp');
+                }
+//
+                this.$refs.guigeAs[index].classList.add('pitchUp');
+
+
+                this.priceIndex = index;
+
+            },
+            pitchSpic:function (index,divIndex) {
+
+                let spicContentChilds = this.$refs.spicContent;
+//                console.log(divIndex);
+//                console.log(spicContentChilds[divIndex].children);
+                for (let i = 0; i < spicContentChilds[divIndex].children.length; i++)
+                {
+                    spicContentChilds[divIndex].children[i].classList.remove('pitchUp');
+                }
+                spicContentChilds[divIndex].children[index+1].classList.add('pitchUp');
+
+//                console.log();
+
+
+            },
 
 
             getIndex:function (key) {
@@ -236,8 +390,18 @@
 
 
             scrollListen:function () {
+//                if(this.$refs.commodityScroll.scrollTop = 0)
+//                {
+//                    let nowScroll = this.$refs.commodityScroll.scrollTop;
+                this.$refs.entirety.scrollTop += this.$refs.commodityScroll.scrollTop - this.scrollCom;
+//
 
-                this.$refs.entirety.scrollTop = this.$refs.commodityScroll.scrollTop;
+                this.scrollCom = this.$refs.commodityScroll.scrollTop
+//                }
+//                else
+//                {
+//                    console.log(this.$refs.commodityScroll.scrollTop);
+//                }
 
                 let dlArr = this.$refs.dls;
                 let dlHeightArr = [];
@@ -272,11 +436,15 @@
                 }
             },
 
-            selectBig:function (guige) {
+            selectBig:function (guige,dlIndex,index) {
                 this.guigemessage = guige;
                 if(this.guigemessage)
                 {
+                    console.log(this.$refs.mengban);
                     this.$refs.mengban.classList.add('display');
+                    this.dlIndexXuanHaole = dlIndex;
+                    this.indexXuanHaole = index;
+
                 }
             },
 
@@ -362,7 +530,7 @@
 
 //            console.log('created');
             this.$nextTick(function () {
-//                console.log('nextTick created')
+
             });
             //获取由列表发过来的数据
             this.id = this.$route.query.id;
@@ -376,6 +544,8 @@
             });
 
 
+
+
             await getCommoditylist(this.id).then(response => {
 //                console.log(this.id);
 //                console.log('commod');
@@ -383,6 +553,11 @@
                 this.commoditylist = response;
 //                console.log(this.commoditylist);
 
+
+
+
+
+                //必须等到DOM加载完成后  DOM需要在过去数据后完成
                     this.$nextTick(function () {
 //                        console.log('next dlArrs');
                         let dlArr = this.$refs.dls;
@@ -396,7 +571,33 @@
                             dlHeightArr.push(sum);
                         }
                         this.dlHeightArrs = dlHeightArr;
+
+
+                        console.log(this.dlDdArray);
+                        this.dlDdArray.length = dlArr.length;
+                        for (let j = 0;j < this.dlDdArray.length;j++)
+                        {
+                            let num = dlArr[j].children.length - 1;
+                            this.dlDdArray[j] = [];
+                            this.dlDdArray[j].length = num;
+
+                            for (let k = 0; k < this.dlDdArray[j].length; k++)
+                            {
+                                this.dlDdArray[j][k] = 0;
+                            }
+                        }
+
+                        console.log(this.dlDdArray);
+                        this.buyNums.length = dlArr.length;
+
+                        for (let i = 0; i < dlArr.length; i++)
+                        {
+                            this.buyNums[i] = 0;
+                        }
+
+                        this.$set(this.dlDdArray,this.buyNums);
                     });
+
 
 
 
@@ -456,7 +657,8 @@
     #shop
     {
         overflow-x: hidden;
-        height: 100%;
+        height: 100vh;
+        //  1 vh = 1/100 手机屏幕的高度
     }
     body, html {
         height: 100%;
@@ -679,6 +881,21 @@
                 padding: pxToRem(35px) pxToRem(15px);
                 position: relative;
                 text-align: left;
+                .redNum
+                {
+                    background-color: rgb(255,70,29);
+                    border-radius: pxToRem(15px);
+                    color: white;
+                    font-size: pxToRem(20px);
+                    font-weight: bold;
+                    line-height: pxToRem(28px);
+                    padding-right: pxToRem(8px);
+                    padding-left: pxToRem(8px);
+                    position: absolute;
+                    top:pxToRem(6px);
+                    right: pxToRem(6px);
+
+                }
             }
             .activeted
             {
@@ -709,43 +926,101 @@
                         position: relative;
                         .list-food-content
                         {
-                            .list-food-header-add
+
+                            .addAndSubtract
                             {
-                                position: absolute;
-                                right:0;
-                                bottom: 0;
-                                width: pxToRem(54px);
+                                vertical-align: baseline;
+                                /*padding-right: pxToRem(40px);*/
+                                text-align: right;
+                                width: 100%;
                                 height: pxToRem(54px);
-                                .add-yuan
+                                line-height: pxToRem(54px);
+                                display: inline-block;
+                                position: absolute;
+                                right: 0;
+                                bottom: 0;
+                                /*line-height: pxToRem(54px);*/
+
+                                .list-food-header-add
                                 {
-                                    line-height: pxToRem(30px);
-                                    font-size: pxToRem(40px);
-                                    text-align: center;
-                                    color: white;
+
                                     display: inline-block;
-                                    position: absolute;
-                                    bottom: 0;
-                                    margin: 0 auto;
-                                    width: pxToRem(40px);
-                                    height: pxToRem(40px);
-                                    border-radius: pxToRem(50px);
-                                    background-color: rgb(49,144,232);
+                                    /*margin-bottom: pxToRem(10px);*/
+                                    .add-yuan
+                                    {
+                                        line-height: pxToRem(30px);
+                                        font-size: pxToRem(50px);
+                                        text-align: center;
+                                        color: white;
+                                        display: inline-block;
+                                        /*<!--margin-right: pxToRem(-30px);-->*/
+                                        /*position: absolute;*/
+                                        /*bottom: 0;*/
+                                        width: pxToRem(40px);
+                                        height: pxToRem(40px);
+                                        border-radius: pxToRem(50px);
+                                        background-color: rgb(49,144,232);
+                                    }
+                                    .add-yuan-select
+                                    {
+
+
+                                        /*display: none;*/
+                                        text-align: center;
+                                        background-color: rgb(49,144,232);
+                                        /*padding-top: pxToRem(10px);*/
+                                        line-height: pxToRem(40px);
+                                        color: white;
+                                        border-radius: pxToRem(26px);
+                                        display: inline-block;
+                                        width: pxToRem(102px);
+                                        height: pxToRem(40px);
+                                        /*margin-top: pxToRem(20px);*/
+                                        /*padding-bottom: pxToRem(20px);*/
+                                        transform: translate(0,-10%);
+
+
+                                    }
                                 }
-                                .add-yuan-select
+                                .list-food-header-subtract
                                 {
-                                    text-align: center;
-                                    background-color: rgb(49,144,232);
-                                    padding-top: pxToRem(10px);
-                                    color: white;
-                                    right: 0;
-                                    border-radius: pxToRem(26px);
-                                    position: absolute;
-                                    bottom: 0;
                                     display: inline-block;
-                                    width: pxToRem(102px);
-                                    height: pxToRem(50px);
+                                    /*margin-right: pxToRem(50px);*/
+                                    /*<!--margin-bottom: pxToRem(-10px);-->*/
+
+                                    .subtract-yuan
+                                    {
+                                        line-height: pxToRem(30px);
+                                        font-size: pxToRem(50px);
+                                        text-align: center;
+                                        color: rgb(49,144,232);
+                                        display: inline-block;
+                                        /*position: absolute;*/
+                                        /*bottom: 0;*/
+                                        /*margin: 0 auto;*/
+                                        width: pxToRem(40px);
+                                        height: pxToRem(40px);
+                                        border-radius: pxToRem(50px);
+                                        border: 1px solid rgb(49,144,232);
+                                    }
+
                                 }
+                                .list-food-header-num
+                                {
+                                    margin-right: pxToRem(4px);
+                                    /*<!--margin-bottom: pxToRem(-5px);-->*/
+                                    display: inline-block;
+                                    font-size: pxToRem(28px);
+                                    /*margin-right: pxToRem(20px);*/
+                                    line-height: pxToRem(33.6px);
+                                    overflow: hidden;
+                                    text-align: center;
+                                    white-space: nowrap;
+                                }
+
                             }
+
+
                             .list-food-header-price
                             {
                                 color: rgb(255,102,0);
@@ -952,6 +1227,7 @@
             }
             .guiges-content
             {
+                margin-top: pxToRem(20px);
                 a
                 {
                     color: rgb(51,51,51);
@@ -966,6 +1242,11 @@
                     font-size: pxToRem(26px);
                     line-height: pxToRem(48px);
                     white-space: nowrap;
+                }
+                .pitchUp
+                {
+                    color: cornflowerblue;
+                    border-color: cornflowerblue;
                 }
             }
 
@@ -1027,7 +1308,94 @@
         display: block;
     }
 
+    footer
+    {
 
 
+        .cart-footer
+        {
+            @include flex();
+            padding-left: pxToRem(158px);
+            position: fixed;
+            bottom: 0;
+            width: 100%;
+            height: pxToRem(96px);
+            background-color: rgba(61,61,63,0.9);
+            color: rgb(51,51,51);
+            line-height: pxToRem(38.4px);
+            z-index: 11;
+            .carticon
+            {
+                .redNum
+                {
+                    background-color: rgb(255,70,29);
+                    border-radius: pxToRem(15px);
+                    color: white;
+                    font-size: pxToRem(20px);
+                    font-weight: bold;
+                    line-height: pxToRem(28px);
+                    padding-right: pxToRem(8px);
+                    padding-left: pxToRem(8px);
+                    position: absolute;
+                    top:pxToRem(6px);
+                    right: pxToRem(6px);
 
+                }
+                font-size: pxToRem(50px);
+                color: grey;
+                text-align: center;
+                line-height: pxToRem(80px);
+                background-color: rgb(54,54,54);
+                bottom: pxToRem(15px);
+                border: 10px solid rgb(68,68,68);
+                border-top-left-radius: 100%;
+                border-top-right-radius: 100%;
+                border-bottom-left-radius: 100%;
+                border-bottom-right-radius: 100%;
+                display: block;
+                width: pxToRem(100px);
+                height: pxToRem(100px);
+                position: absolute;
+                left: pxToRem(24px);
+                /*line-height: pxToRem(38.4px);*/
+                will-change: transform;
+            }
+            .buybuybuy
+            {
+                background-color: cornflowerblue;
+                color: white;
+            }
+            .cartInfo
+            {
+                flex-grow: 1;
+                flex-shrink: 1;
+                font-size: pxToRem(32px);
+                line-height: pxToRem(38.4px);
+                .sumPrice
+                {
+                    color: white;
+                    font-size: pxToRem(36px);
+
+                }
+                .sendPrice
+                {
+                    color: white;
+                    font-size: pxToRem(20px);
+                    line-height: pxToRem(24px);
+                }
+            }
+            .quJiesuan
+            {
+                color: white;
+                background-color: rgb(76,217,100);
+                font-size: pxToRem(30px);
+                font-weight: bold;
+                height: pxToRem(96px);
+                line-height: pxToRem(96px);
+                text-align: center;
+                width: pxToRem(210px);
+            }
+        }
+
+    }
 </style>

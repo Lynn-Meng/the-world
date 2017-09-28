@@ -5,7 +5,7 @@ import Origin from '@/origin';
 import Home from '@/pages/home/home';
 import Find from '@/pages/find/find';
 import Order from '@/pages/order/order';
-import Mine from '@/pages/mine/mine';
+const Mine = () => import('@/pages/mine/mine');
 const Shop = () => import('@/pages/shop/shop');
 export default
 [
